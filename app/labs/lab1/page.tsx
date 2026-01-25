@@ -310,7 +310,7 @@ export default function Lab1() {
       <a href="https://github.com/RyanMa9/kambaz-next-js-sp26" id="wd-github">
         click here
       </a>{" "}
-      to get my code repo on github
+      to get my code repo on github.
       <br />
     </div>
   );
