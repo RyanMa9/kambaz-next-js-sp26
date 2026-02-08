@@ -3,6 +3,8 @@ import TailwindSpacing from "./TailwindSpacing";
 import TailwindTypography from "./TailwindTypography";
 import TailwindBackgroundColors from "./TailwindBackgroundColors";
 import TailwindResponsiveDesign from "./TailwindResponsiveDesign";
+import TailwindFilters from "./TailwindFilters";
+import TailwindGrids from "./TailwindGrids";
 
 export default function TailwindLab() {
   return (
@@ -12,6 +14,8 @@ export default function TailwindLab() {
       <TailwindTypography />
       <TailwindBackgroundColors />
       <TailwindResponsiveDesign />
+      <TailwindFilters />
+      <TailwindGrids />
     </div>
   );
 }
