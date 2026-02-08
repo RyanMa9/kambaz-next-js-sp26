@@ -1,4 +1,5 @@
 import {
+  Button,
   Col,
   Form,
   FormCheck,
@@ -123,6 +124,16 @@ export default function AssignmentEditor() {
                 <FormControl type="date"></FormControl>
               </Col>
             </Row>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="d-flex justify-content-end">
+            <Button type="submit" className="btn btn-light">
+              Cancel
+            </Button>
+            <Button type="submit" className="btn btn-danger">
+              Submission Type
+            </Button>
           </Col>
         </Row>
       </Form>
