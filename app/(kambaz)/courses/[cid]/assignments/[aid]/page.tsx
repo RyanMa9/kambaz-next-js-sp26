@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   Col,
@@ -9,8 +11,15 @@ import {
   FormSelect,
   Row,
 } from "react-bootstrap";
+import { useParams } from "next/navigation";
+import * as db from "@/app/(kambaz)/database";
+import Link from "next/link";
 
 export default function AssignmentEditor() {
+  const { aid, cid } = useParams();
+  const assignment = db.assignments.find(
+    (assignment) => cid === assignment.course && aid === assignment._id
+  );
   return (
     <div id="wd-assignments-editor p-3">
       <Form>
@@ -19,7 +28,7 @@ export default function AssignmentEditor() {
         </h2>
         <Row className="mb-3">
           <Col>
-            <FormControl id="wd-name" defaultValue="A1 - ENV + HTML" />
+            <FormControl id="wd-name" defaultValue={assignment?.title} />
           </Col>
         </Row>
         <Row className="mb-3">
@@ -28,9 +37,7 @@ export default function AssignmentEditor() {
               as="textarea"
               id="wd-description"
               rows={10}
-              defaultValue={
-                "The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas Application should include a link to navigate back to the landing page."
-              }
+              defaultValue={assignment?.description}
             ></FormControl>
           </Col>
         </Row>
@@ -39,7 +46,10 @@ export default function AssignmentEditor() {
             <FormLabel>Points</FormLabel>
           </Col>
           <Col>
-            <FormControl type="number" defaultValue={100}></FormControl>
+            <FormControl
+              type="number"
+              defaultValue={assignment?.pts}
+            ></FormControl>
           </Col>
         </Row>
         <Row className="mb-3">
@@ -107,7 +117,10 @@ export default function AssignmentEditor() {
               <FormLabel column sm={4} className="fw-bold">
                 Due
               </FormLabel>
-              <FormControl type="date"></FormControl>
+              <FormControl
+                type="date"
+                defaultValue={assignment?.due_date}
+              ></FormControl>
             </Row>
 
             <Row className="p-1 mb-4">
@@ -115,7 +128,10 @@ export default function AssignmentEditor() {
                 <FormLabel column sm={4} className="fw-bold">
                   Available From
                 </FormLabel>
-                <FormControl type="date"></FormControl>
+                <FormControl
+                  type="date"
+                  defaultValue={assignment?.available_at_date}
+                ></FormControl>
               </Col>
               <Col>
                 <FormLabel column sm={2} className="fw-bold">
@@ -128,12 +144,17 @@ export default function AssignmentEditor() {
         </Row>
         <Row>
           <Col className="d-flex justify-content-end">
-            <Button type="submit" className="btn btn-light">
-              Cancel
-            </Button>
-            <Button type="submit" className="btn btn-danger">
-              Submission Type
-            </Button>
+            <Link href={`/courses/${cid}/assignments`} className="text-black">
+              <Button type="submit" className="btn btn-light">
+                Cancel
+              </Button>
+            </Link>
+
+            <Link href={`/courses/${cid}/assignments`} className="text-white">
+              <Button type="submit" className="btn btn-danger">
+                Save
+              </Button>
+            </Link>
           </Col>
         </Row>
       </Form>
