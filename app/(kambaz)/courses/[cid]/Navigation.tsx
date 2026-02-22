@@ -16,7 +16,10 @@ export default function CourseNavigation() {
   const path = usePathname();
   const { cid } = useParams();
   return (
-    <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
+    <div
+      id="wd-courses-navigation"
+      className="wd list-group fs-5 rounded-0 d-none d-md-block"
+    >
       {links.map((link) => (
         <Link
           href={`/courses/${cid}/${link.toLowerCase()}`}
