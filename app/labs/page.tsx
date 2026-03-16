@@ -20,6 +20,11 @@ export default function labs() {
             Lab 3: JavaScript Fundamentals{" "}
           </Link>
         </li>
+        <li>
+          <Link href="/labs/lab4" id="wd-lab3-link">
+            Lab 4: State{" "}
+          </Link>
+        </li>
       </ul>
     </div>
   );

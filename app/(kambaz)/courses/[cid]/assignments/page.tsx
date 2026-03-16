@@ -1,30 +1,58 @@
 "use client";
+
 import Link from "next/link";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import AssignmentControls from "./AssignmentControls";
 import { BsGripVertical } from "react-icons/bs";
 import LessonControlButtons from "../modules/LessonControlButtons";
 import { FaChevronDown } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuNotebookPen } from "react-icons/lu";
-import { useParams } from "next/navigation";
-import * as db from "@/app/(kambaz)/database";
+import { redirect, useParams } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store";
+import { deleteAssignment } from "./reducer";
+import { IoEllipsisVertical } from "react-icons/io5";
+import GreenCheckmark from "../modules/GreenCheckmark";
+import { useState } from "react";
+import AssignmentDeleteModal from "../assignments/[aid]/AssignmentDeleteModal";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector(
+    (state: RootState) => state.accountReducer
+  );
+
+  // Redirect if not signed in
+  if (!currentUser) {
+    redirect("/account/signin");
+  }
+
+  const isFaculty =
+    currentUser.role === "FACULTY" || currentUser.role === "ADMIN";
+
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentReducer
+  );
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(
+    null
+  );
+
   return (
     <div>
-      <AssignmentControls></AssignmentControls>
+      {isFaculty && <AssignmentControls />}
+
       <br />
       <ListGroup className="rounded-0" id="wd-modules">
         <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray bg-secondary">
-          {/* top part of assignments category*/}
+          {/* Top part of assignments category */}
           <div className="d-flex justify-content-between">
             <div className="wd-title p-3 ps-2 fw-bold">
               <BsGripVertical className="me-2 fs-3" />
-              <FaChevronDown className="me-2 fs-5 "></FaChevronDown>
+              <FaChevronDown className="me-2 fs-5" />
               Assignments
             </div>
             <div className="wd-title p-3 ps-2">
@@ -36,11 +64,14 @@ export default function Assignments() {
             </div>
           </div>
 
-          <ListGroup className="wd-lessons rounded-0 "></ListGroup>
+          <ListGroup className="wd-lessons rounded-0"></ListGroup>
           {assignments
             .filter((assignment) => assignment.course === cid)
             .map((assignment) => (
-              <ListGroupItem className="wd-lesson p-3 ps-1 d-flex justify-content-between align-items-start">
+              <ListGroupItem
+                key={assignment._id}
+                className="wd-lesson p-3 ps-1 d-flex justify-content-between align-items-start"
+              >
                 <BsGripVertical className="me-1 fs-3" />
                 <LuNotebookPen className="me-2 fs-4 text-success" />
                 <div className="flex-fill ms-2">
@@ -52,21 +83,42 @@ export default function Assignments() {
                   </Link>
                   <div>
                     <span className="text-danger fw-bold">
-                      {assignment.modules}
+                      {assignment.modules || "Multiple Modules"}
                     </span>
                     <span className="wd-assignment-info fw-bold">
-                      {assignment.available_at}
+                      {assignment.available_at || assignment.available_at_date}
                     </span>
                     <div className="wd-assignment-due-date">
-                      <b>Due </b> {assignment.due} | {assignment.pts} pts
+                      <b>Due </b> {assignment.due || assignment.due_date} |{" "}
+                      {assignment.pts} pts
                     </div>
                   </div>
                 </div>
-                <LessonControlButtons />
+                <GreenCheckmark />
+                <IoEllipsisVertical className="fs-4" />
+                {isFaculty && (
+                  <FaTrash
+                    className="text-danger me-2 mb-1"
+                    onClick={() => {
+                      setAssignmentToDelete(assignment._id);
+                      setShowDeleteModal(true);
+                    }}
+                  />
+                )}
               </ListGroupItem>
             ))}
         </ListGroupItem>
       </ListGroup>
+      <AssignmentDeleteModal
+        show={showDeleteModal}
+        handleClose={() => setShowDeleteModal(false)}
+        handleDelete={() => {
+          if (assignmentToDelete) {
+            dispatch(deleteAssignment(assignmentToDelete));
+            setAssignmentToDelete(null);
+          }
+        }}
+      />
     </div>
   );
 }
