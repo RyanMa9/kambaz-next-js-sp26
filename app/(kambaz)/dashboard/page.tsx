@@ -36,7 +36,7 @@ export default function Dashboard() {
   }
 
   const isFaculty =
-    currentUser.role === "FACULTY" || currentUser.role === "ADMIN";
+    currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const [course, setCourse] = useState<any>({
     _id: "0",

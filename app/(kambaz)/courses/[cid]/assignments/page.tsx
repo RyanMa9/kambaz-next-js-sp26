@@ -31,7 +31,7 @@ export default function Assignments() {
   }
 
   const isFaculty =
-    currentUser.role === "FACULTY" || currentUser.role === "ADMIN";
+    currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   const { assignments } = useSelector(
     (state: RootState) => state.assignmentReducer
