@@ -156,7 +156,7 @@ export default function Dashboard() {
                   }}
                 >
                   <CardImg
-                    src={course.image || "/images/reactjs.jpg"}
+                    src={"/images/reactjs.jpg"}
                     variant="top"
                     width="100%"
                     height={160}
