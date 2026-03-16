@@ -75,12 +75,14 @@ export default function Assignments() {
                 <BsGripVertical className="me-1 fs-3" />
                 <LuNotebookPen className="me-2 fs-4 text-success" />
                 <div className="flex-fill ms-2">
-                  <Link
-                    href={`/courses/${cid}/assignments/${assignment._id}`}
-                    className="wd-assignment-link fw-bold text-dark text-decoration-none"
-                  >
-                    {assignment._id + " - " + assignment.title}
-                  </Link>
+                  {isFaculty && (
+                    <Link
+                      href={`/courses/${cid}/assignments/${assignment._id}`}
+                      className="wd-assignment-link fw-bold text-dark text-decoration-none"
+                    >
+                      {assignment._id + " - " + assignment.title}
+                    </Link>
+                  )}
                   <div>
                     <span className="text-danger fw-bold">
                       {assignment.modules || "Multiple Modules"}
