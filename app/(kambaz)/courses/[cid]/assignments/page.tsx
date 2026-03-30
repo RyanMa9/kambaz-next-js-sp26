@@ -12,11 +12,12 @@ import { LuNotebookPen } from "react-icons/lu";
 import { redirect, useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
-import { deleteAssignment } from "./reducer";
+import { setAssignments, deleteAssignment } from "./reducer";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "../modules/GreenCheckmark";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AssignmentDeleteModal from "../assignments/[aid]/AssignmentDeleteModal";
+import * as coursesClient from "../../client";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -40,6 +41,22 @@ export default function Assignments() {
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(
     null
   );
+
+  const fetchAssignments = async () => {
+    const data = await coursesClient.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(data));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  const onRemoveAssignment = async (assignmentId: string) => {
+    await coursesClient.deleteAssignmentById(assignmentId);
+    dispatch(
+      setAssignments(assignments.filter((a: any) => a._id !== assignmentId))
+    );
+  };
 
   return (
     <div>
@@ -111,12 +128,13 @@ export default function Assignments() {
             ))}
         </ListGroupItem>
       </ListGroup>
+
       <AssignmentDeleteModal
         show={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}
         handleDelete={() => {
           if (assignmentToDelete) {
-            dispatch(deleteAssignment(assignmentToDelete));
+            onRemoveAssignment(assignmentToDelete);
             setAssignmentToDelete(null);
           }
         }}

@@ -5,7 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { Form, FormControl, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { addAssignment, updateAssignment } from "../reducer";
+import { setAssignments } from "../reducer";
+import * as coursesClient from "../../../client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -27,7 +28,7 @@ export default function AssignmentEditor() {
   );
   const [dueDate, setDueDate] = useState(editingAssignment?.due_date || "");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const payload = {
       _id: editingAssignment?._id,
       course: cid,
@@ -39,9 +40,18 @@ export default function AssignmentEditor() {
     };
 
     if (editingAssignment) {
-      dispatch(updateAssignment(payload));
+      const updated = await coursesClient.updateAssignment(payload);
+      dispatch(
+        setAssignments(
+          assignments.map((a: any) => (a._id === updated._id ? updated : a))
+        )
+      );
     } else {
-      dispatch(addAssignment(payload));
+      const created = await coursesClient.createAssignment(
+        cid as string,
+        payload
+      );
+      dispatch(setAssignments([...assignments, created]));
     }
 
     router.push(`/courses/${cid}/assignments`);

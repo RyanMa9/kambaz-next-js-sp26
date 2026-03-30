@@ -25,6 +25,11 @@ export default function labs() {
             Lab 4: State{" "}
           </Link>
         </li>
+        <li>
+          <Link href="/labs/lab5" id="wd-lab3-link">
+            Lab 5: Server{" "}
+          </Link>
+        </li>
       </ul>
     </div>
   );
